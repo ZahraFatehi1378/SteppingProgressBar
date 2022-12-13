@@ -13,7 +13,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.stepingprogressbar.ui.navigation.BottomNavGraph
@@ -73,7 +76,7 @@ class MainActivity : ComponentActivity() {
                             navHostController = navController,
                         )
 
-                        SteppingProgressBar(isActivesList)
+                        SteppingProgressBar(isActivesList ,  Color(0xFF00A693))
 
                         val coroutineScope = rememberCoroutineScope()
 
