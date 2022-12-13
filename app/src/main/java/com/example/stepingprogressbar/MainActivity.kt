@@ -44,10 +44,10 @@ class MainActivity : ComponentActivity() {
                             false,
                             false,
                             false,
-                            false,
-                            false,
-                            false,
-                            false
+//                            false,
+//                            false,
+//                            false,
+//                            false
                         )
                     )
                     val navController = rememberNavController()
@@ -58,10 +58,10 @@ class MainActivity : ComponentActivity() {
                             "two",
                             "three",
                             "four",
-                            "five",
-                            "six",
-                            "seven",
-                            "eight"
+//                            "five",
+//                            "six",
+//                            "seven",
+//                            "eight"
                         )
                     }
 
@@ -103,8 +103,8 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                     coroutineScope.launch {
                                         // delay(2400)
-                                        currentScreenIndex.value--
                                         isActivesList.set(currentScreenIndex.value, false)
+                                        currentScreenIndex.value--
                                         navController.navigate(screensList.get(currentScreenIndex.value))
                                     }
                                 }

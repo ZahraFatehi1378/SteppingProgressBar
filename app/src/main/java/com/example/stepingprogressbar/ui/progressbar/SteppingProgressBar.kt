@@ -1,15 +1,14 @@
 package com.example.stepingprogressbar.ui.progressbar
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -29,6 +28,17 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
         Animatable(0f)
     }
 
+//    val itemProgressingPercent = remember {
+//        Animatable(0f)
+//    }
+
+    var enabled by remember { mutableStateOf(false) }
+
+    val alpha: Float by animateFloatAsState(
+        targetValue =  (isActivesList.count { it } - 0.5f)  ,
+        animationSpec = tween(durationMillis = 800)
+    )
+
     Box(
         modifier = Modifier
             .padding(bottom = 12.dp, end = 102.dp)
@@ -46,51 +56,62 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
         }
 
 
-        Box( modifier = Modifier
-            .padding(horizontal = 36.dp)
-            .fillMaxWidth()
-            .height(6.dp)
-            .drawBehind {
+        LaunchedEffect(isActivesList.count { it }) {
+            enabled = !enabled
+            println("cliiiiiiicked")
+            println(alpha)
+//            itemProgressingPercent.animateTo(
+//                100f,
+//                animationSpec = tween(durationMillis = 2000, delayMillis = 900)
+//            )
+        }
 
-                drawRect(
-                    color = Color(0xFFFEFFFF),
-                    size = size
-                )
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 36.dp)
+                .fillMaxWidth()
+                .height(6.dp)
+                .alpha(alpha)
+                .drawBehind {
 
-                drawRect(
-                    color = Color.LightGray,
-                    topLeft = Offset(
-                        x = if (ltr) 0f else size.width,
-                        y = 0F
-                    ),
-                    size = Size(
-                        width = (if (ltr) 1 else -1) * size.width * progressingPercent.value / 100,
-                        height = size.height
+                    drawRect(
+                        color = Color(0xFFFEFFFF),
+                        size = size
                     )
-                )
 
-                drawRect(
-                    color = color,
-                    topLeft = Offset(
-                        x = if (ltr) 0f else size.width,
-                        y = 0F
-                    ),
-                    size = Size(
-                        width = (if (ltr) 1 else -1) * ((isActivesList.count { it } - 0.5f) * size.width / (isActivesList.size - 1)) * progressingPercent.value / 100,
-                        height = size.height
+                    drawRect(
+                        color = Color.LightGray,
+                        topLeft = Offset(
+                            x = if (ltr) 0f else size.width,
+                            y = 0F
+                        ),
+                        size = Size(
+                            width = (if (ltr) 1 else -1) * size.width * progressingPercent.value / 100,
+                            height = size.height
+                        )
                     )
-                )
-            })
+
+                    drawRect(
+                        color = color,
+                        topLeft = Offset(
+                            x = if (ltr) 0f else size.width,
+                            y = 0F
+                        ),
+                        size = Size(
+                            width = (if (ltr) 1 else -1) * (alpha* size.width / (isActivesList.size - 1)) * progressingPercent.value / 100,
+                            height = size.height
+                        )
+                    )
+                })
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             isActivesList.forEachIndexed { index, isActive ->
-                println("index     :      "+index)
                 WizardFirstLaunchScreenAnim(duration = 1500, delay = 900 + index * 100) {
                     CircularBottomItem(
                         text = index.toString(),
-                        color = if (isActive) MaterialTheme.colors.primary else Color.LightGray
+                        color = if (isActive) color else Color.LightGray
                     )
                 }
             }
