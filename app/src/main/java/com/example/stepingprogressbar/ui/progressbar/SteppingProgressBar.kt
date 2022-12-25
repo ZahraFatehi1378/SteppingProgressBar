@@ -21,21 +21,17 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color) {
+fun SteppingProgressBar(
+    itemsTitle: SnapshotStateList<String>,
+    color: Color,
+    currentScreenIndex: MutableState<Int>,
+) {
 
     val ltr = LocalLayoutDirection.current == LayoutDirection.Ltr
-    val progressingPercent = remember {
-        Animatable(0f)
-    }
-
-//    val itemProgressingPercent = remember {
-//        Animatable(0f)
-//    }
-
+    val progressingPercent = remember { Animatable(0f) }
     var enabled by remember { mutableStateOf(false) }
-
     val alpha: Float by animateFloatAsState(
-        targetValue =  (isActivesList.count { it } - 0.5f)  ,
+        targetValue = (currentScreenIndex.value + 0.5f),
         animationSpec = tween(durationMillis = 800)
     )
 
@@ -45,7 +41,6 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-
         LaunchedEffect(progressingPercent) {
             launch {
                 progressingPercent.animateTo(
@@ -55,15 +50,9 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
             }
         }
 
-
-        LaunchedEffect(isActivesList.count { it }) {
+        LaunchedEffect(currentScreenIndex.value) {
             enabled = !enabled
-            println("cliiiiiiicked")
             println(alpha)
-//            itemProgressingPercent.animateTo(
-//                100f,
-//                animationSpec = tween(durationMillis = 2000, delayMillis = 900)
-//            )
         }
 
         Box(
@@ -98,7 +87,7 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
                             y = 0F
                         ),
                         size = Size(
-                            width = (if (ltr) 1 else -1) * (alpha* size.width / (isActivesList.size - 1)) * progressingPercent.value / 100,
+                            width = (if (ltr) 1 else -1) * (alpha * size.width / (itemsTitle.size - 1)) * progressingPercent.value / 100,
                             height = size.height
                         )
                     )
@@ -107,11 +96,11 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            isActivesList.forEachIndexed { index, isActive ->
+            itemsTitle.forEachIndexed { index: Int, itemTitle: String ->
                 WizardFirstLaunchScreenAnim(duration = 1500, delay = 900 + index * 100) {
                     CircularBottomItem(
-                        text = index.toString(),
-                        color = if (isActive) color else Color.LightGray
+                        text = itemTitle,
+                        color = if (index <= currentScreenIndex.value) color else Color.LightGray
                     )
                 }
             }
@@ -119,5 +108,4 @@ fun SteppingProgressBar(isActivesList: SnapshotStateList<Boolean>, color: Color)
         }
 
     }
-
 }

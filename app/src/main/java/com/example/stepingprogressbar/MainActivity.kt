@@ -14,9 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.stepingprogressbar.ui.navigation.BottomNavGraph
@@ -35,33 +32,18 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val currentScreenIndex = remember { mutableStateOf(0) }
-                    val isActivesList = remember { mutableStateListOf<Boolean>() }
-                    isActivesList.clear()
-                    isActivesList.addAll(
-                        listOf(
-                            true,
-                            false,
-                            false,
-                            false,
-                            false,
-//                            false,
-//                            false,
-//                            false,
-//                            false
-                        )
-                    )
+                    val steppingItemsTitle =
+                        remember { mutableStateListOf("1", "2", "3", "4", "5") }
                     val navController = rememberNavController()
                     val screensList = remember {
                         mutableListOf(
-                            "zero",
-                            "one",
-                            "two",
-                            "three",
-                            "four",
-//                            "five",
-//                            "six",
-//                            "seven",
-//                            "eight"
+                            "First Screen",
+                            "Second Screen",
+                            "Third Screen",
+                            "Forth Screen",
+                            "Fifth Screen",
+                            "Sixth Screen",
+                            "Seventh Screen"
                         )
                     }
 
@@ -74,13 +56,17 @@ class MainActivity : ComponentActivity() {
 
                         BottomNavGraph(
                             navHostController = navController,
+                            screensList = screensList
                         )
 
-                        SteppingProgressBar(isActivesList ,  Color(0xFF00A693))
+                        SteppingProgressBar(
+                            itemsTitle = steppingItemsTitle,
+                            currentScreenIndex = currentScreenIndex,
+                            color = Color(0xFF00A693)
+                        )
 
                         val coroutineScope = rememberCoroutineScope()
 
-                        val focusManager = LocalFocusManager.current
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -88,10 +74,10 @@ class MainActivity : ComponentActivity() {
                             TextButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        //  delay(2400)
-                                        currentScreenIndex.value++
-                                        isActivesList.set(currentScreenIndex.value, true)
-                                        navController.navigate(screensList.get(currentScreenIndex.value))
+                                        screensList[if (currentScreenIndex.value < steppingItemsTitle.size - 1) currentScreenIndex.value++ else currentScreenIndex.value]
+                                            .let {
+                                                navController.navigate(screensList[currentScreenIndex.value])
+                                            }
                                     }
                                 }
                             ) {
@@ -102,10 +88,10 @@ class MainActivity : ComponentActivity() {
                             TextButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        // delay(2400)
-                                        isActivesList.set(currentScreenIndex.value, false)
-                                        currentScreenIndex.value--
-                                        navController.navigate(screensList.get(currentScreenIndex.value))
+                                        screensList[if (currentScreenIndex.value > 0) currentScreenIndex.value-- else currentScreenIndex.value]
+                                            .let {
+                                                navController.navigate(screensList[currentScreenIndex.value])
+                                            }
                                     }
                                 }
                             ) {
