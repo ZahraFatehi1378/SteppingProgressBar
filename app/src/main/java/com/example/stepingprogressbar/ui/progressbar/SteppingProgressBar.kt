@@ -25,6 +25,7 @@ fun SteppingProgressBar(
     itemsTitle: SnapshotStateList<String>,
     color: Color,
     currentScreenIndex: MutableState<Int>,
+    padding:PaddingValues
 ) {
 
     val ltr = LocalLayoutDirection.current == LayoutDirection.Ltr
@@ -37,7 +38,7 @@ fun SteppingProgressBar(
 
     Box(
         modifier = Modifier
-            .padding(bottom = 12.dp, end = 102.dp)
+            .padding(padding)
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {

@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.stepingprogressbar.ui.navigation.BottomNavGraph
 import com.example.stepingprogressbar.ui.progressbar.SteppingProgressBar
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(bottom = 52.dp, top = 52.dp, start = 102.dp),
+                            .padding(vertical = 52.dp, horizontal = 102.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
 
@@ -62,12 +63,14 @@ class MainActivity : ComponentActivity() {
                         SteppingProgressBar(
                             itemsTitle = steppingItemsTitle,
                             currentScreenIndex = currentScreenIndex,
-                            color = Color(0xFF00A693)
+                            color = Color(0xFF00A693),
+                            padding = PaddingValues(0.dp)
                         )
 
                         val coroutineScope = rememberCoroutineScope()
 
                         Row(
+                            Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             // next
@@ -81,7 +84,11 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             ) {
-                                Text(text = "next")
+                                Text(
+                                    text = "next",
+                                    color = Color(0xFF00A693),
+                                    fontSize = 22.sp
+                                )
                             }
 
                             // previous
@@ -95,7 +102,12 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             ) {
-                                Text(text = "previous")
+                                Text(
+                                    text = "previous",
+                                    color = Color(0xFF00A693),
+                                    fontSize = 22.sp
+
+                                )
                             }
                         }
 
