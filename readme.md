@@ -1,4 +1,4 @@
-![Stepping Progressbar](/preview/stepping2.gif)
+![Stepping Progressbar](/preview/stepping.gif)
 
 
 # Stepping Progress Bar
